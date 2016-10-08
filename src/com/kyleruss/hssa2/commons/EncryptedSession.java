@@ -6,6 +6,7 @@
 
 package com.kyleruss.hssa2.commons;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -21,7 +22,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class EncryptedSession 
 {
     private byte[] AESKey;
-    private SecureRandom rGen;
     private byte[] data;
     private byte[] iv;
     private Cipher AESCipher;
@@ -29,6 +29,19 @@ public class EncryptedSession
     
     public EncryptedSession()
     {
+        initAESKey();
+    }
+    
+    public EncryptedSession(String AESKey, String data, Key asymKey) 
+    throws UnsupportedEncodingException
+    {
+        this(AESKey.getBytes("UTF-8"), data.getBytes("UTF-8"), asymKey);
+    }
+    
+    public EncryptedSession(byte[] data, Key asymKey)
+    {
+        this.data       =   data;
+        this.asymKey    =   asymKey;
         initAESKey();
     }
     
@@ -83,7 +96,8 @@ public class EncryptedSession
     
     private void initAESKey()
     {
-        AESKey  =   new byte[16];
+        SecureRandom rGen   =   new SecureRandom();
+        AESKey              =   new byte[16];
         rGen.nextBytes(AESKey);
     }
 
@@ -95,16 +109,6 @@ public class EncryptedSession
     public void setAESKey(byte[] AESKey) 
     {
         this.AESKey = AESKey;
-    }
-
-    public SecureRandom getrGen() 
-    {
-        return rGen;
-    }
-
-    public void setrGen(SecureRandom rGen) 
-    {
-        this.rGen = rGen;
     }
 
     public byte[] getData() 
