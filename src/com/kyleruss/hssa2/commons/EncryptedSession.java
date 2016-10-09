@@ -12,6 +12,8 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -32,10 +34,13 @@ public class EncryptedSession
         initAESKey();
     }
     
-    public EncryptedSession(String AESKey, String data, Key asymKey) 
+    public EncryptedSession(String AESKey, String data, Key asymKey, boolean decode) 
     throws UnsupportedEncodingException
     {
-        this(AESKey.getBytes("UTF-8"), data.getBytes("UTF-8"), asymKey);
+        Decoder decoder =   Base64.getDecoder();
+        this.AESKey     =   decode? decoder.decode(AESKey.getBytes("UTF-8")) : AESKey.getBytes("UTF-8");
+        this.data       =   decode? decoder.decode(data.getBytes("UTF-8")) : data.getBytes("UTF-8");
+        this.asymKey    =   asymKey;
     }
     
     public EncryptedSession(byte[] data, Key asymKey)
@@ -52,7 +57,7 @@ public class EncryptedSession
         this.asymKey    =   asymKey;
     }
     
-    public void initAES(int mode)
+    public void initCipher(int mode)
     {
         try
         {
@@ -69,7 +74,8 @@ public class EncryptedSession
         }
     }
     
-    public byte[] processData() throws IllegalBlockSizeException, BadPaddingException
+    public byte[] processData() 
+    throws IllegalBlockSizeException, BadPaddingException
     {
         if(AESCipher == null) return null;
         return AESCipher.doFinal(data);
@@ -90,8 +96,8 @@ public class EncryptedSession
         Cipher asymCipher   =   Cipher.getInstance("RSA");
         asymCipher.init(Cipher.DECRYPT_MODE, asymKey);
         AESKey              =   asymCipher.doFinal(AESKey);
-        initAES(Cipher.DECRYPT_MODE);
-        processData();
+        initCipher(Cipher.DECRYPT_MODE);
+        data                =   processData();
     }
     
     private void initAESKey()
