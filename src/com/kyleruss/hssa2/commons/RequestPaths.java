@@ -14,13 +14,15 @@ public class RequestPaths
     
     public static final String SERV_CONNECT_REQ =   "/user/connect";
     
+    public static final String SERV_DISCON_REQ  =   "/user/disconnect";
+    
     public static final String PASS_REQ         =   "/user/password/send";
     
     public static final String PUBLIC_SEND_REQ  =   "/key/user/add";
     
     public static final String USER_LIST_REQ    =   "/user/online/list";
     
-    public static final String PUBLIC_GET_REQ   =   "/key/user/get";
+    public static final String PUBLIC_GET_REQ   =   "/key/server/public/get";
     
     public static final String PROFILE_UP_REQ   =   "/user/profile/upload";
 }
