@@ -27,7 +27,19 @@ public class EncryptedSession
     private Cipher AESCipher;
     private Key asymKey;
     
-    public void initAES()
+    public EncryptedSession()
+    {
+        initAESKey();
+    }
+    
+    public EncryptedSession(byte[] AESKey, byte[] data, Key asymKey)
+    {
+        this.AESKey     =   AESKey;
+        this.data       =   data;
+        this.asymKey    =   asymKey;
+    }
+    
+    public void initAES(int mode)
     {
         try
         {
@@ -35,7 +47,7 @@ public class EncryptedSession
             IvParameterSpec ivParam =   new IvParameterSpec(iv);
             SecretKeySpec keySpec   =   new SecretKeySpec(AESKey, "AES");
             AESCipher               =   Cipher.getInstance("AES/CBC/PKCS5Padding");
-            AESCipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParam);
+            AESCipher.init(mode, keySpec, ivParam);
         }
         
         catch(NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e)
@@ -44,7 +56,7 @@ public class EncryptedSession
         }
     }
     
-    public byte[] encryptData() throws IllegalBlockSizeException, BadPaddingException
+    public byte[] processData() throws IllegalBlockSizeException, BadPaddingException
     {
         if(AESCipher == null) return null;
         return AESCipher.doFinal(data);
@@ -58,11 +70,80 @@ public class EncryptedSession
         return asymCipher.doFinal(AESKey);
     }
     
-    public void initAESKey()
+    public void unlock() 
+    throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, 
+    IllegalBlockSizeException, BadPaddingException
+    {
+        Cipher asymCipher   =   Cipher.getInstance("RSA");
+        asymCipher.init(Cipher.DECRYPT_MODE, asymKey);
+        AESKey              =   asymCipher.doFinal(AESKey);
+        initAES(Cipher.DECRYPT_MODE);
+        processData();
+    }
+    
+    private void initAESKey()
     {
         AESKey  =   new byte[16];
         rGen.nextBytes(AESKey);
     }
-    
-    
+
+    public byte[] getAESKey() 
+    {
+        return AESKey;
+    }
+
+    public void setAESKey(byte[] AESKey) 
+    {
+        this.AESKey = AESKey;
+    }
+
+    public SecureRandom getrGen() 
+    {
+        return rGen;
+    }
+
+    public void setrGen(SecureRandom rGen) 
+    {
+        this.rGen = rGen;
+    }
+
+    public byte[] getData() 
+    {
+        return data;
+    }
+
+    public void setData(byte[] data) 
+    {
+        this.data = data;
+    }
+
+    public byte[] getIv() 
+    {
+        return iv;
+    }
+
+    public void setIv(byte[] iv) 
+    {
+        this.iv = iv;
+    }
+
+    public Cipher getAESCipher() 
+    {
+        return AESCipher;
+    }
+
+    public void setAESCipher(Cipher AESCipher) 
+    {
+        this.AESCipher = AESCipher;
+    }
+
+    public Key getAsymKey() 
+    {
+        return asymKey;
+    }
+
+    public void setAsymKey(Key asymKey) 
+    {
+        this.asymKey = asymKey;
+    }
 }
