@@ -34,14 +34,14 @@ public class EncryptedSession
         initAESKey();
     }
     
-    public EncryptedSession(String AESKey, String data, Key asymKey, boolean decode) 
+  /*  public EncryptedSession(String AESKey, String data, Key asymKey, boolean decode) 
     throws UnsupportedEncodingException
     {
         Decoder decoder =   Base64.getDecoder();
         this.AESKey     =   decode? decoder.decode(AESKey.getBytes("UTF-8")) : AESKey.getBytes("UTF-8");
         this.data       =   decode? decoder.decode(data.getBytes("UTF-8")) : data.getBytes("UTF-8");
         this.asymKey    =   asymKey;
-    }
+    } */
     
     public EncryptedSession(byte[] data, Key asymKey)
     {

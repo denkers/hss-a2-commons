@@ -35,7 +35,7 @@ public class CryptoCommons
         return new String(plaintext);
     }
     
-    public static String pbeEncrypt(byte[] password, byte[] salt, byte[] plaintext) 
+    public static byte[] pbeEncrypt(byte[] password, byte[] salt, byte[] plaintext) 
     throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchPaddingException, InvalidKeyException, 
     InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
     {
@@ -45,41 +45,44 @@ public class CryptoCommons
         Cipher cipher           =   Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
         byte[] ciphertext = cipher.doFinal(plaintext);
-        return Base64.getEncoder().encodeToString(ciphertext);
+       // return Base64.getEncoder().encodeToString(ciphertext);
+       return ciphertext;
     }
     
-    public static String publicEncrypt(String plaintext, Key key) 
+    public static byte[] publicEncrypt(byte[] plaintext, Key key) 
     throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, 
     NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException
     {
         Cipher cipher       =   Cipher.getInstance("RSA");
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte[] cipherBytes  =   cipher.doFinal(plaintext.getBytes("UTF-8"));
-        return Base64.getEncoder().encodeToString(cipherBytes);
+        //byte[] cipherBytes  =   cipher.doFinal(plaintext.getBytes("UTF-8"));
+      //  return Base64.getEncoder().encodeToString(cipherBytes);
+      return cipher.doFinal(plaintext);
     }
     
-    public static String publicDecrypt(String ciphertext, Key key) 
+    public static String publicDecrypt(byte[] ciphertext, Key key) 
     throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, 
     IllegalBlockSizeException, InvalidKeyException, BadPaddingException
     {
         Cipher cipher           =   Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, key);
-        byte[] decoded          =   Base64.getDecoder().decode(ciphertext.getBytes("UTF-8"));
-        byte[] plaintextBytes   =   cipher.doFinal(decoded);
+       // byte[] decoded          =   Base64.getDecoder().decode(ciphertext.getBytes("UTF-8"));
+        byte[] plaintextBytes   =   cipher.doFinal(ciphertext);
         return new String(plaintextBytes);
     }
     
-    public static String generateHash(byte[] data) 
+    public static byte[] generateHash(byte[] data) 
     throws NoSuchAlgorithmException
     {
         return generateHash(data, "MD5");
     }
     
-    public static String generateHash(byte[] data, String algorithm) 
+    public static byte[] generateHash(byte[] data, String algorithm) 
     throws NoSuchAlgorithmException
     {
         MessageDigest md    =  MessageDigest.getInstance(algorithm);
         byte[] digest       =   md.digest(data);
-        return Base64.getEncoder().encodeToString(digest);
+        //return Base64.getEncoder().encodeToString(digest);
+        return digest;
     }
 }
