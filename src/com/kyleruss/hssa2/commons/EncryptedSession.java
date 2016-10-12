@@ -34,15 +34,6 @@ public class EncryptedSession
         initAESKey();
     }
     
-  /*  public EncryptedSession(String AESKey, String data, Key asymKey, boolean decode) 
-    throws UnsupportedEncodingException
-    {
-        Decoder decoder =   Base64.getDecoder();
-        this.AESKey     =   decode? decoder.decode(AESKey.getBytes("UTF-8")) : AESKey.getBytes("UTF-8");
-        this.data       =   decode? decoder.decode(data.getBytes("UTF-8")) : data.getBytes("UTF-8");
-        this.asymKey    =   asymKey;
-    } */
-    
     public EncryptedSession(byte[] data, Key asymKey)
     {
         this.data       =   data;
@@ -84,7 +75,7 @@ public class EncryptedSession
     public byte[] encryptKey() 
     throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException
     {
-        Cipher asymCipher   =   Cipher.getInstance("RSA");
+        Cipher asymCipher   =   Cipher.getInstance("RSA/ECB/PKCS1Padding");
         asymCipher.init(Cipher.ENCRYPT_MODE, asymKey);
         return asymCipher.doFinal(AESKey);
     }
@@ -93,7 +84,7 @@ public class EncryptedSession
     throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, 
     IllegalBlockSizeException, BadPaddingException
     {
-        Cipher asymCipher   =   Cipher.getInstance("RSA");
+        Cipher asymCipher   =   Cipher.getInstance("RSA/ECB/PKCS1Padding");
         asymCipher.init(Cipher.DECRYPT_MODE, asymKey);
         AESKey              =   asymCipher.doFinal(AESKey);
         initCipher(Cipher.DECRYPT_MODE);

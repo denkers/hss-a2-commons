@@ -48,7 +48,6 @@ public class CryptoUtils
     public static Key stringToAsymKey(byte[] keyBytes, boolean publicKey) 
     throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
     {
-        //byte[] keyBytes             =   decode? Base64.getDecoder().decode(keyValue.getBytes("UTF-8")) : keyValue.getBytes("UTF-8");
         KeySpec keySpec             =   publicKey? new X509EncodedKeySpec(keyBytes) : new PKCS8EncodedKeySpec(keyBytes);   
         KeyFactory keyFactory       =   KeyFactory.getInstance("RSA");
         return publicKey? keyFactory.generatePublic(keySpec) : keyFactory.generatePrivate(keySpec);
