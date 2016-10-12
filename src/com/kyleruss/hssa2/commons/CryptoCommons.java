@@ -57,13 +57,21 @@ public class CryptoCommons
         return cipher.doFinal(plaintext);
     }
     
-    public static String publicDecrypt(byte[] ciphertext, Key key) 
+    public static byte[] publicDecryptBytes(byte[] ciphertext, Key key) 
     throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, 
     IllegalBlockSizeException, InvalidKeyException, BadPaddingException
     {
         Cipher cipher           =   Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] plaintextBytes   =   cipher.doFinal(ciphertext);
+        return plaintextBytes;
+    }
+    
+    public static String publicDecrypt(byte[] ciphertext, Key key) 
+    throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, 
+    IllegalBlockSizeException, InvalidKeyException, BadPaddingException
+    {
+        byte[] plaintextBytes   =   publicDecryptBytes(ciphertext, key);
         return new String(plaintextBytes);
     }
     
