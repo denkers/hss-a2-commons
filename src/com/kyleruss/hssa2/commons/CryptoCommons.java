@@ -48,16 +48,16 @@ public class CryptoCommons
        return ciphertext;
     }
     
-    public byte[] AESDecrypt(SecretKeySpec keySpec, byte[] ciphertext) 
+    public byte[] AES(SecretKeySpec keySpec, byte[] text, boolean encrypt) 
     throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, 
     IllegalBlockSizeException, BadPaddingException
     {
         byte[] iv                   =   new byte[16];
         IvParameterSpec ivParam     =   new IvParameterSpec(iv);
         Cipher cipher               =   Cipher.getInstance("AES/CBC/PKCS5Padding");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParam);
+        cipher.init(encrypt? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE, keySpec, ivParam);
         
-        return cipher.doFinal(ciphertext);
+        return cipher.doFinal(text);
     }
     
     public static byte[] publicEncrypt(byte[] plaintext, Key key) 
