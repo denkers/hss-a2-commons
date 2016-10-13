@@ -45,7 +45,6 @@ public class CryptoCommons
         Cipher cipher           =   Cipher.getInstance("AES/CBC/PKCS5Padding");
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, iv);
         byte[] ciphertext = cipher.doFinal(plaintext);
-       // return Base64.getEncoder().encodeToString(ciphertext);
        return ciphertext;
     }
     
@@ -53,20 +52,17 @@ public class CryptoCommons
     throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, 
     NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException
     {
-        Cipher cipher       =   Cipher.getInstance("RSA");
+        Cipher cipher       =   Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        //byte[] cipherBytes  =   cipher.doFinal(plaintext.getBytes("UTF-8"));
-      //  return Base64.getEncoder().encodeToString(cipherBytes);
-      return cipher.doFinal(plaintext);
+        return cipher.doFinal(plaintext);
     }
     
     public static String publicDecrypt(byte[] ciphertext, Key key) 
     throws UnsupportedEncodingException, NoSuchAlgorithmException, NoSuchPaddingException, 
     IllegalBlockSizeException, InvalidKeyException, BadPaddingException
     {
-        Cipher cipher           =   Cipher.getInstance("RSA");
+        Cipher cipher           =   Cipher.getInstance("RSA/ECB/PKCS1Padding");
         cipher.init(Cipher.DECRYPT_MODE, key);
-       // byte[] decoded          =   Base64.getDecoder().decode(ciphertext.getBytes("UTF-8"));
         byte[] plaintextBytes   =   cipher.doFinal(ciphertext);
         return new String(plaintextBytes);
     }
@@ -82,7 +78,6 @@ public class CryptoCommons
     {
         MessageDigest md    =  MessageDigest.getInstance(algorithm);
         byte[] digest       =   md.digest(data);
-        //return Base64.getEncoder().encodeToString(digest);
         return digest;
     }
 }
