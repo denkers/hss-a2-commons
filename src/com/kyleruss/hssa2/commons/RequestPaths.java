@@ -20,6 +20,8 @@ public class RequestPaths
     
     public static final String USER_PUBLIC_SEND_REQ     =   "/key/user/add";
     
+    public static final String USER_SETTINGS_SAVE       =   "/user/settings/save";
+    
     public static final String USER_LIST_REQ            =   "/user/online/list";
     
     public static final String SERV_PUBLIC_GET_REQ      =   "/key/server/public/get";
