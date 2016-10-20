@@ -8,7 +8,6 @@ package com.kyleruss.hssa2.commons;
 
 public class Password extends SafeStructure
 {
-    
     public Password(int length)
     {
         super(length);

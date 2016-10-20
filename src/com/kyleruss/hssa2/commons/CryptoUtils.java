@@ -15,7 +15,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 
 public class CryptoUtils 
 {
@@ -27,14 +26,19 @@ public class CryptoUtils
         rGen    =   new SecureRandom();
     }
             
+    //Generates a random string using the passed charset
+    //Length of the string is determined by the passed length
     public static String generateRandomString(int length, String charset)
     {
         StringBuilder builder   =   new StringBuilder();
         
         for(int i = 0; i < length; i++)
         {
+            //No charset passed, generate any random character
             if(charset == null)
                 builder.append((char) rGen.nextInt(Character.MAX_VALUE));
+            
+            //Generate characters from the passed charset
             else
             {
                 int index   =   rGen.nextInt(charset.length());
@@ -45,6 +49,8 @@ public class CryptoUtils
         return builder.toString();
     }
     
+    //Creates a new public or private key from the passed key bytes
+    //publicKey: true to create a public key instance and false to create a private key instance
     public static Key stringToAsymKey(byte[] keyBytes, boolean publicKey) 
     throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeySpecException
     {
@@ -53,7 +59,8 @@ public class CryptoUtils
         return publicKey? keyFactory.generatePublic(keySpec) : keyFactory.generatePrivate(keySpec);
     }
     
-    
+    //Generates and returns a random byte array 
+    //Length of the bytes is determined by the passed length
     public static byte[] generateRandomBytes(int length)
     {
         byte[] bytes    =   new byte[length];

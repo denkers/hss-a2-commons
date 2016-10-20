@@ -6,14 +6,11 @@
 
 package com.kyleruss.hssa2.commons;
 
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.Base64.Decoder;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -23,10 +20,20 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class EncryptedSession 
 {
+    //The AES secret key bytes
     private byte[] AESKey;
+    
+    //The plain/cipher text bytes
     private byte[] data;
+    
+    //The AES IV - default is empty[16]
     private byte[] iv;
+    
+    //The AES cipher instance used to encrypt the data
     private Cipher AESCipher;
+    
+    //A public/private RSA key 
+    //used to encrypt/decrypt the AES key
     private Key asymKey;
     
     public EncryptedSession()
@@ -48,13 +55,21 @@ public class EncryptedSession
         this.asymKey    =   asymKey;
     }
     
+    //Initializes the AES cipher, iv and keys
+    //Uses CBC mode and PKCS5 padding
+    //mode: enter the cipher mode (Cipher.ENCRYPT_MODE, Cipher.DECRYPT_MODE)
     public void initCipher(int mode)
     {
         try
         {
+            //initialize IV
             iv  =   new byte[16];
             IvParameterSpec ivParam =   new IvParameterSpec(iv);
+            
+            //initialize AES secret key
             SecretKeySpec keySpec   =   new SecretKeySpec(AESKey, "AES");
+            
+            //initialize AES cipher
             AESCipher               =   Cipher.getInstance("AES/CBC/PKCS5Padding");
             AESCipher.init(mode, keySpec, ivParam);
         }
@@ -65,6 +80,8 @@ public class EncryptedSession
         }
     }
     
+    //Encrypts or decrypts the data using the AES cipher
+    //EncryptedSession@initCipher should be called before
     public byte[] processData() 
     throws IllegalBlockSizeException, BadPaddingException
     {
@@ -72,6 +89,8 @@ public class EncryptedSession
         return AESCipher.doFinal(data);
     }
     
+    //Encrypts the AES secret key with the public/private key 
+    //Uses RSA encryption in ECB mode with PKCS1 padding
     public byte[] encryptKey() 
     throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException
     {
@@ -80,6 +99,9 @@ public class EncryptedSession
         return asymCipher.doFinal(AESKey);
     }
     
+    //Unlocks this encrypted message
+    //First decrypts the secret key with RSA decryption using the private/public key
+    //Then AES decrypts the data using the decrypted secret key
     public void unlock() 
     throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, 
     IllegalBlockSizeException, BadPaddingException
@@ -91,6 +113,7 @@ public class EncryptedSession
         data                =   processData();
     }
     
+    //Initializes the secret key with 16 random bytes
     private void initAESKey()
     {
         SecureRandom rGen   =   new SecureRandom();

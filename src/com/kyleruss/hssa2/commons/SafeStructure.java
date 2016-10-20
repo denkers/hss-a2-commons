@@ -8,7 +8,6 @@ package com.kyleruss.hssa2.commons;
 
 import java.io.Serializable;
 
-
 public abstract class SafeStructure implements Serializable
 {
     protected byte[] data;
