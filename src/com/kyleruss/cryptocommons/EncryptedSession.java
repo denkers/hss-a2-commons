@@ -4,7 +4,7 @@
 //  Highly Secured Systems A2
 //======================================
 
-package com.kyleruss.hssa2.commons;
+package com.kyleruss.cryptocommons;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
